@@ -1,0 +1,6 @@
+displayName = Grappletech
+author = hamstar
+version = 1.0.0
+modReferences = HamstarHelpers@5.11.0
+buildIgnore = *.csproj, *.user, *.bat, obj\*, bin\*, .vs\*, .git\*
+homepage = https://github.com/hamstar0/tml-grappletech-mod
