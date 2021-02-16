@@ -5,4 +5,4 @@ Grappletech adds restrictions to grappling hook use against non-wood materials. 
 Credits:
   timpat73 - Item sprites
 
-https://github.com/hamstar0/tml-findablemanacrystals-mod
+https://github.com/hamstar0/tml-grappletech-mod
