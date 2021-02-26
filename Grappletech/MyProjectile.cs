@@ -7,14 +7,14 @@ namespace Grappletech {
 	class GrappletechProjectile : GlobalProjectile {
 		public override bool PreAI( Projectile projectile ) {
 			if( projectile.aiStyle == 7 && !projectile.npcProj ) {
-				ProjectileLogic.UpdateForGrappleProjectile( Main.player[projectile.owner], projectile );
+				ProjectileLogic.UpdateForGrappleProjectileForPlayer( Main.player[projectile.owner], projectile );
 			}
 
 			return base.PreAI( projectile );
 		}
 
 		public override void GrapplePullSpeed( Projectile projectile, Player player, ref float speed ) {
-			ProjectileLogic.UpdateGrapplePullSpeed( player, projectile, ref speed );
+			ProjectileLogic.UpdateGrapplePullSpeedForPlayer( player, projectile, ref speed );
 		}
 	}
 }

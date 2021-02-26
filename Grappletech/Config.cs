@@ -20,7 +20,7 @@ namespace Grappletech {
 		////////////////
 
 		[DefaultValue( true )]
-		public bool GrappleOnlyWoodAndPlatforms { get; set; } = true;
+		public bool GrappleableWoodAndPlatforms { get; set; } = true;
 
 		//
 
