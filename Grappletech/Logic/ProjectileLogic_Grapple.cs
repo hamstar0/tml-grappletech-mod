@@ -14,6 +14,9 @@ namespace Grappletech.Logic {
 			if( !Main.tileSolid[tile.type] && tile.type != TileID.MinecartTrack ) {
 				return false;
 			}
+			if( tile.inActive() ) {	// actuated
+				return false;
+			}
 			
 			var config = GrappletechConfig.Instance;
 
@@ -64,7 +67,7 @@ namespace Grappletech.Logic {
 		////
 
 		public static void UpdateForGrappleProjectileForPlayer( Player player, Projectile projectile ) {
-			if( projectile.ai[0] != 0 && projectile.ai[0] != 2 ) {
+			if( projectile.ai[0] != 0f && projectile.ai[0] != 2f ) {
 				return;
 			}
 
@@ -82,12 +85,12 @@ namespace Grappletech.Logic {
 
 			Vector2 projCen = projectile.Center;
 			Vector2 projVel = projectile.velocity;
-			int nowX = (int)( projCen.X / 16f );
-			int nowY = (int)( projCen.Y / 16f );
-			int nextX = (int)( ((projVel.X * 0.5f) + projCen.X) / 16f );
-			int nextY = (int)( ((projVel.Y * 0.5f) + projCen.Y) / 16f );
-			int lastX = (int)( (projVel.X + projCen.X) / 16f );
-			int lastY = (int)( (projVel.Y + projCen.Y) / 16f );
+			int nowX = (int)projCen.X / 16;
+			int nowY = (int)projCen.Y / 16;
+			int nextX = (int)((projVel.X * 0.5f) + projCen.X) / 16;
+			int nextY = (int)((projVel.Y * 0.5f) + projCen.Y) / 16;
+			int lastX = (int)(projVel.X + projCen.X) / 16;
+			int lastY = (int)(projVel.Y + projCen.Y) / 16;
 
 			/*int bah = 120;
 			Timers.SetTimer( "grap", 3, false, () => {
@@ -98,22 +101,22 @@ namespace Grappletech.Logic {
 				Tile nextTile = Main.tile[nextX, nextY];
 				Tile lastTile = Main.tile[lastX, lastY];
 
-				if( nextTile?.active() == true && (Main.tileSolid[nextTile.type] || nextTile.type == TileID.MinecartTrack) ) {
+				if( nextTile?.nactive() == true && (Main.tileSolid[nextTile.type] || nextTile.type == TileID.MinecartTrack) ) {
 					if( !ProjectileLogic.IsTileNormallyGrappleable( nextTile ) ) {
-						projectile.ai[0] = 1;
+						projectile.ai[0] = 1f;
 					}
 				} else
-				if( lastTile?.active() == true && (Main.tileSolid[lastTile.type] || lastTile.type == TileID.MinecartTrack) ) {
+				if( lastTile?.nactive() == true && (Main.tileSolid[lastTile.type] || lastTile.type == TileID.MinecartTrack) ) {
 					if( !ProjectileLogic.IsTileNormallyGrappleable( lastTile ) ) {
-						projectile.ai[0] = 1;
+						projectile.ai[0] = 1f;
 					}
 				}
 			} else {
 				Tile nowTile = Main.tile[nowX, nowY];
 
-				if( nowTile?.active() == true && (Main.tileSolid[nowTile.type] || nowTile.type == TileID.MinecartTrack) ) {
+				if( nowTile?.nactive() == true && (Main.tileSolid[nowTile.type] || nowTile.type == TileID.MinecartTrack) ) {
 					if( !ProjectileLogic.IsTileNormallyGrappleable( nowTile ) ) {
-						projectile.ai[0] = 1;
+						projectile.ai[0] = 1f;
 					}
 				}
 			}
