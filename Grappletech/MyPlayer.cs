@@ -1,6 +1,6 @@
 using Terraria;
 using Terraria.ModLoader;
-using HamstarHelpers.Helpers.Players;
+using ModLibsGeneral.Libraries.Players;
 using Grappletech.Items;
 
 
@@ -13,7 +13,7 @@ namespace Grappletech {
 		////////////////
 
 		public override void UpdateEquips( ref bool wallSpeedBuff, ref bool tileSpeedBuff, ref bool tileRangeBuff ) {
-			int maxAccSlot = 3 + PlayerItemHelpers.GetCurrentVanillaMaxAccessories( this.player );
+			int maxAccSlot = 3 + PlayerItemLibraries.GetCurrentVanillaMaxAccessories( this.player );
 			int hookBracerType = ModContent.ItemType<TensionedHookBracerItem>();
 
 			this.IsEquippingTensionedHookBracer = false;

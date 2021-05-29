@@ -1,14 +1,15 @@
+using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
-using HamstarHelpers.Helpers.Items.Attributes;
-using HamstarHelpers.Services.Messages.Inbox;
-using System.Collections.Generic;
+using ModLibsGeneral.Libraries.Items.Attributes;
+using ModLibsInterMod.Libraries.Mods.APIMirrors.ModHelpersAPIMirrors;
+
 
 namespace Grappletech {
 	class GrappletechItem : GlobalItem {
 		public override bool OnPickup( Item item, Player player ) {
-			if( ItemAttributeHelpers.IsGrapple( item ) ) {
-				InboxMessages.SetMessage(
+			if( ItemAttributeLibraries.IsGrapple( item ) ) {
+				InboxAPIMirrorsLibraries.SetMessage(
 					"GrappletechGrappleChanges",
 					"Grappletech: Grappling hooks must now be used on only wood objects.",
 					false
@@ -19,7 +20,7 @@ namespace Grappletech {
 
 
 		public override void ModifyTooltips( Item item, List<TooltipLine> tooltips ) {
-			if( !ItemAttributeHelpers.IsGrapple( item ) ) {
+			if( !ItemAttributeLibraries.IsGrapple( item ) ) {
 				return;
 			}
 
@@ -32,7 +33,7 @@ namespace Grappletech {
 			string text = "Only works on wood and platforms";
 
 			TooltipLine tip = new TooltipLine( this.mod, "Grappletech", modName + text );
-			ItemInformationAttributeHelpers.ApplyTooltipAt( tooltips, tip );
+			ItemInformationAttributeLibraries.ApplyTooltipAt( tooltips, tip );
 		}
 	}
 }
