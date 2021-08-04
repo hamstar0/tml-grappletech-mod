@@ -2,18 +2,31 @@ using System.Collections.Generic;
 using Terraria;
 using Terraria.ModLoader;
 using ModLibsGeneral.Libraries.Items.Attributes;
-using ModLibsInterMod.Libraries.Mods.APIMirrors.ModHelpersAPIMirrors;
 
 
 namespace Grappletech {
 	class GrappletechItem : GlobalItem {
+		private static void MessageAboutGrapplingChanges() {
+			Messages.MessagesAPI.AddMessagesCategoriesInitializeEvent( () => {
+				Messages.MessagesAPI.AddMessage(
+					title: "Note: Grappling changes are now in effect",
+					description: "Grappling hooks must now be used on only wood objects.",
+					modOfOrigin: GrappletechMod.Instance,
+					id: "GrappletechGrappleChanges",
+					parentMessage: Messages.MessagesAPI.ModInfoCategoryMsg
+				);
+			} );
+		}
+
+
+
+		////////////////
+
 		public override bool OnPickup( Item item, Player player ) {
 			if( ItemAttributeLibraries.IsGrapple( item ) ) {
-				InboxAPIMirrorsLibraries.SetMessage(
-					"GrappletechGrappleChanges",
-					"Grappletech: Grappling hooks must now be used on only wood objects.",
-					false
-				);
+				if( ModLoader.GetMod( "Messages" ) != null ) {
+					GrappletechItem.MessageAboutGrapplingChanges();
+				}
 			}
 			return base.OnPickup( item, player );
 		}
