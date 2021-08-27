@@ -13,6 +13,8 @@ namespace Grappletech {
 					description: "Grappling hooks must now be used on only wood objects.",
 					modOfOrigin: GrappletechMod.Instance,
 					id: "GrappletechGrappleChanges",
+					alertPlayer: Messages.MessagesAPI.IsUnread("GrappletechGrappleChanges"),
+					isImportant: false,
 					parentMessage: Messages.MessagesAPI.ModInfoCategoryMsg
 				);
 			} );
