@@ -10,7 +10,7 @@ namespace Grappletech {
 			Messages.MessagesAPI.AddMessagesCategoriesInitializeEvent( () => {
 				Messages.MessagesAPI.AddMessage(
 					title: "Note: Grappling changes are now in effect",
-					description: "Grappling hooks must now be used on only wood objects.",
+					description: "Grappling hooks must now be used on only wood objects or 1-wide tile formations (e.g. a pole).",
 					modOfOrigin: GrappletechMod.Instance,
 					id: "GrappletechGrappleChanges",
 					alertPlayer: Messages.MessagesAPI.IsUnread("GrappletechGrappleChanges"),
@@ -40,12 +40,22 @@ namespace Grappletech {
 			}
 
 			var config = GrappletechConfig.Instance;
-			if( !config.Get<bool>( nameof(config.GrappleableWoodAndPlatforms) ) ) {
+			bool allowsWood = config.Get<bool>( nameof(config.GrappleableTileWhitelistWoodAndPlatforms) );
+			bool allowsPoles = config.Get<bool>( nameof(config.GrappleableTileWhitelistNarrowFormations) );
+
+			string text;
+
+			if( allowsWood && allowsPoles ) {
+				text = "Only works on wood, platforms, and 1-wide tile formations";
+			} else if( allowsWood ) {
+				text = "Only works on wood and platforms";
+			} else if( allowsPoles ) {
+				text = "Only works on 1-wide tile formations";
+			} else {
 				return;
 			}
 
 			string modName = "[c/FFFF88:" + GrappletechMod.Instance.DisplayName + "] - ";
-			string text = "Only works on wood and platforms";
 
 			TooltipLine tip = new TooltipLine( this.mod, "Grappletech", modName + text );
 			ItemInformationAttributeLibraries.ApplyTooltipAt( tooltips, tip );

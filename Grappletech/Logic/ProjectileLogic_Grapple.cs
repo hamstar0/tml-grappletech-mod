@@ -3,24 +3,32 @@ using System.Collections.Generic;
 using Microsoft.Xna.Framework;
 using Terraria;
 using Terraria.ID;
+using ModLibsGeneral.Libraries.Fx;
 
 
 namespace Grappletech.Logic {
 	static partial class ProjectileLogic {
-		public static bool IsTileNormallyGrappleable( Tile tile ) {
+		public static bool? IsTileNormallyGrappleable( int tileX, int tileY ) {
+			Tile tile = Main.tile[ tileX, tileY ];
+
 			if( !tile.active() ) {
-				return false;
-			}
-			if( !Main.tileSolid[tile.type] && tile.type != TileID.MinecartTrack ) {
-				return false;
+				return null;
 			}
 			if( tile.inActive() ) {	// actuated
-				return false;
+				return null;
 			}
 			
 			var config = GrappletechConfig.Instance;
+			var whitelist = config.Get<HashSet<string>>( nameof(config.GrappleableTileWhitelist) );
+			string tileUid = TileID.GetUniqueKey( tile.type );
 
-			if( config.Get<bool>( nameof(config.GrappleableWoodAndPlatforms) ) ) {
+			if( !Main.tileSolid[tile.type] ) {
+				if( tile.type != TileID.MinecartTrack ) {
+					return null;
+				}
+			}
+
+			if( config.Get<bool>( nameof(config.GrappleableTileWhitelistWoodAndPlatforms) ) ) {
 				switch( tile.type ) {
 				case TileID.Platforms:
 				case TileID.MinecartTrack:
@@ -39,8 +47,31 @@ namespace Grappletech.Logic {
 				}
 			}
 
-			var whitelist = config.Get<HashSet<string>>( nameof(config.GrappleableTileWhitelist) );
-			string tileUid = TileID.GetUniqueKey( tile.type );
+			if( config.Get<bool>( nameof(config.GrappleableTileWhitelistNarrowFormations) ) ) {
+				int neighbors = 0;
+
+				Tile nw = Framing.GetTileSafely( tileX-1, tileY-1 );
+				Tile n = Framing.GetTileSafely( tileX, tileY-1 );
+				Tile ne = Framing.GetTileSafely( tileX+1, tileY-1 );
+				Tile w = Framing.GetTileSafely( tileX-1, tileY );
+				Tile e = Framing.GetTileSafely( tileX+1, tileY );
+				Tile sw = Framing.GetTileSafely( tileX-1, tileY-1 );
+				Tile s = Framing.GetTileSafely( tileX-1, tileY );
+				Tile se = Framing.GetTileSafely( tileX+1, tileY-1 );
+
+				if( nw?.active() ?? false ) { neighbors++; }
+				if( n?.active() ?? false ) { neighbors++; }
+				if( ne?.active() ?? false ) { neighbors++; }
+				if( w?.active() ?? false ) { neighbors++; }
+				if( e?.active() ?? false ) { neighbors++; }
+				if( sw?.active() ?? false ) { neighbors++; }
+				if( s?.active() ?? false ) { neighbors++; }
+				if( se?.active() ?? false ) { neighbors++; }
+
+				if( neighbors <= 2 ) {
+					return true;
+				}
+			}
 
 			return whitelist.Contains( tileUid );
 		}
@@ -48,25 +79,27 @@ namespace Grappletech.Logic {
 
 
 		////////////////
-
-		public static void UpdateGrapplePullSpeedForPlayer( Player player, Projectile projectile, ref float speed ) {
-			int x = (int)projectile.Center.X / 16;
-			int y = (int)projectile.Center.Y / 16;
-
-			bool? isGrappleable = ProjectileLogic.IsTileNormallyGrappleable( Main.tile[x, y] );
-
-			if( isGrappleable.HasValue && !isGrappleable.Value ) {
-				var myplayer = player.GetModPlayer<GrappletechPlayer>();
-
-				if( !myplayer.IsEquippingTensionedHookBracer ) {
-					speed = 0f;
-				}
+		
+		public static void UpdateGrapplePullSpeedForPlayerIf( Player player, Projectile projectile, ref float speed ) {
+			var myplayer = player.GetModPlayer<GrappletechPlayer>();
+			if( myplayer.IsEquippingTensionedHookBracer ) {
+				return;
 			}
+
+			int tileX = (int)projectile.Center.X / 16;
+			int tileY = (int)projectile.Center.Y / 16;
+
+			bool? isGrappleable = ProjectileLogic.IsTileNormallyGrappleable( tileX, tileY );
+			if( !isGrappleable.HasValue || isGrappleable.Value ) {
+				return;
+			}
+
+			speed = 0f;
 		}
 
 		////
 
-		public static void UpdateForGrappleProjectileForPlayer( Player player, Projectile projectile ) {
+		public static void UpdateForGrappleProjectileForPlayerIf( Player player, Projectile projectile ) {
 			if( projectile.ai[0] != 0f && projectile.ai[0] != 2f ) {
 				return;
 			}
@@ -77,7 +110,7 @@ namespace Grappletech.Logic {
 			}
 
 			var config = GrappletechConfig.Instance;
-			if( !config.Get<bool>( nameof(config.GrappleableWoodAndPlatforms) ) ) {
+			if( !config.Get<bool>( nameof(config.GrappleableTileWhitelistWoodAndPlatforms) ) ) {
 				if( config.Get<HashSet<string>>( nameof(config.GrappleableTileWhitelist) ).Count == 0 ) {
 					return;
 				}
@@ -102,24 +135,39 @@ namespace Grappletech.Logic {
 				Tile lastTile = Main.tile[lastX, lastY];
 
 				if( nextTile?.nactive() == true && (Main.tileSolid[nextTile.type] || nextTile.type == TileID.MinecartTrack) ) {
-					if( !ProjectileLogic.IsTileNormallyGrappleable( nextTile ) ) {
-						projectile.ai[0] = 1f;
+					bool? isGrappleable = ProjectileLogic.IsTileNormallyGrappleable( nextX, nextY );
+					if( !isGrappleable.HasValue || !isGrappleable.Value ) {
+						ProjectileLogic.HaltGrapple( projectile );
 					}
 				} else
 				if( lastTile?.nactive() == true && (Main.tileSolid[lastTile.type] || lastTile.type == TileID.MinecartTrack) ) {
-					if( !ProjectileLogic.IsTileNormallyGrappleable( lastTile ) ) {
-						projectile.ai[0] = 1f;
+					bool? isGrappleable = ProjectileLogic.IsTileNormallyGrappleable( lastX, lastY );
+					if( !isGrappleable.HasValue || !isGrappleable.Value ) {
+						ProjectileLogic.HaltGrapple( projectile );
 					}
 				}
 			} else {
 				Tile nowTile = Main.tile[nowX, nowY];
 
 				if( nowTile?.nactive() == true && (Main.tileSolid[nowTile.type] || nowTile.type == TileID.MinecartTrack) ) {
-					if( !ProjectileLogic.IsTileNormallyGrappleable( nowTile ) ) {
-						projectile.ai[0] = 1f;
+					bool? isGrappleable = ProjectileLogic.IsTileNormallyGrappleable( nowX, nowY );
+					if( !isGrappleable.HasValue || !isGrappleable.Value ) {
+						ProjectileLogic.HaltGrapple( projectile );
 					}
 				}
 			}
+		}
+
+
+		////////////////
+
+		public static void HaltGrapple( Projectile projectile ) {
+			projectile.ai[0] = 1f;
+
+			//
+
+			ParticleFxLibraries.MakeDustCloud( projectile.Center, 1, 0.3f, 0.5f );
+			Main.PlaySound( SoundID.Tink, projectile.Center );
 		}
 	}
 }
