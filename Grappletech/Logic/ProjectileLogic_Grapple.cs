@@ -48,27 +48,42 @@ namespace Grappletech.Logic {
 			}
 
 			if( config.Get<bool>( nameof(config.GrappleableTileWhitelistNarrowFormations) ) ) {
-				int neighbors = 0;
+				int totalNear = 0;
+				int cardNear = 0;
 
 				Tile nw = Framing.GetTileSafely( tileX-1, tileY-1 );
 				Tile n = Framing.GetTileSafely( tileX, tileY-1 );
 				Tile ne = Framing.GetTileSafely( tileX+1, tileY-1 );
+
 				Tile w = Framing.GetTileSafely( tileX-1, tileY );
 				Tile e = Framing.GetTileSafely( tileX+1, tileY );
-				Tile sw = Framing.GetTileSafely( tileX-1, tileY-1 );
-				Tile s = Framing.GetTileSafely( tileX-1, tileY );
-				Tile se = Framing.GetTileSafely( tileX+1, tileY-1 );
 
-				if( nw?.active() ?? false ) { neighbors++; }
-				if( n?.active() ?? false ) { neighbors++; }
-				if( ne?.active() ?? false ) { neighbors++; }
-				if( w?.active() ?? false ) { neighbors++; }
-				if( e?.active() ?? false ) { neighbors++; }
-				if( sw?.active() ?? false ) { neighbors++; }
-				if( s?.active() ?? false ) { neighbors++; }
-				if( se?.active() ?? false ) { neighbors++; }
+				Tile sw = Framing.GetTileSafely( tileX-1, tileY+1 );
+				Tile s = Framing.GetTileSafely( tileX, tileY+1 );
+				Tile se = Framing.GetTileSafely( tileX+1, tileY+1 );
 
-				if( neighbors <= 2 ) {
+				if( nw?.active() ?? false && Main.tileSolid[nw.type] ) { totalNear++; }
+				if( n?.active() ?? false && Main.tileSolid[n.type] ) {
+					cardNear++;
+					totalNear++;
+				}
+				if( ne?.active() ?? false && Main.tileSolid[ne.type] ) { totalNear++; }
+				if( w?.active() ?? false && Main.tileSolid[w.type] ) {
+					cardNear++;
+					totalNear++;
+				}
+				if( e?.active() ?? false && Main.tileSolid[e.type] ) {
+					cardNear++;
+					totalNear++;
+				}
+				if( sw?.active() ?? false && Main.tileSolid[sw.type] ) { totalNear++; }
+				if( s?.active() ?? false && Main.tileSolid[s.type] ) {
+					cardNear++;
+					totalNear++;
+				}
+				if( se?.active() ?? false && Main.tileSolid[se.type] ) { totalNear++; }
+
+				if( cardNear == 1 || (cardNear <= 2 && totalNear <= 2) ) {
 					return true;
 				}
 			}

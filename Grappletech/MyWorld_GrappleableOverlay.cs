@@ -17,17 +17,19 @@ namespace Grappletech {
 		//private Vector2 LastProjectilePos;
 
 		private bool CanDrawGrappleableTilesOverlay( out bool isGrappling ) {
-			Player plr = Main.LocalPlayer;
-
-			// Not grappling or lingering after a grapple
-			if( plr.grapCount <= 0 ) {
-				int ticksRemaining = Timers.GetTimerTickDuration( GrappletechWorld.DrawGrappleLingerTimerName );
-				if( ticksRemaining <= 0 ) {
-					isGrappling = false;
-					return false;
-				}
+			int ticksRemaining = Timers.GetTimerTickDuration( GrappletechWorld.DrawGrappleLingerTimerName );
+			if( ticksRemaining >= 1 ) {
+				isGrappling = false;
+				return true;
 			}
 
+			//if( Main.LocalPlayer.grapCount <= 0 ) {	<- Isn't non-zero when initially grappling??
+			//	if( ticksRemaining <= 0 ) {
+			//		isGrappling = false;
+			//		return false;
+			//	}
+			//}
+			//
 			//Projectile grappProj = Main.projectile.FirstOrDefault( p =>
 			//	p?.active == true
 			//	&& p.aiStyle == 7
@@ -51,14 +53,14 @@ namespace Grappletech {
 				&& !p.npcProj
 				&& p.owner == Main.myPlayer
 			);
-			return true;
+			return isGrappling;
 		}
 
 		////
 
 		private void DrawGrappleableTilesOverlayIf( bool isGrappling ) {
 			if( isGrappling ) {
-				Timers.SetTimer( GrappletechWorld.DrawGrappleLingerTimerName, 60, true, () => false );
+				Timers.SetTimer( GrappletechWorld.DrawGrappleLingerTimerName, 120, true, () => false );
 			}
 
 			//
@@ -69,7 +71,7 @@ namespace Grappletech {
 			int tileY = (int)Main.MouseWorld.Y / 16;
 
 			Main.spriteBatch.Begin();
-			GrappletechWorld.DrawGrappleableTilesOverlayNear( tileX, tileY );
+			GrappletechWorld.DrawGrappleableTilesOverlayNear( Main.LocalPlayer.MountedCenter, tileX, tileY );
 			Main.spriteBatch.End();
 		}
 	}
