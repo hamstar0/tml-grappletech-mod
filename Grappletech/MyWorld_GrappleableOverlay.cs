@@ -65,13 +65,8 @@ namespace Grappletech {
 
 			//
 
-			//int tileX = (int)pos.X / 16;
-			//int tileY = (int)pos.Y / 16;
-			int tileX = (int)Main.MouseWorld.X / 16;
-			int tileY = (int)Main.MouseWorld.Y / 16;
-
 			Main.spriteBatch.Begin();
-			GrappletechWorld.DrawGrappleableTilesOverlayNear( Main.LocalPlayer.MountedCenter, tileX, tileY );
+			GrappletechWorld.DrawGrappleableTilesOverlayNear( Main.LocalPlayer.MountedCenter );
 			Main.spriteBatch.End();
 		}
 	}

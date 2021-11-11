@@ -10,14 +10,15 @@ using Grappletech.Logic;
 
 namespace Grappletech {
 	partial class GrappletechWorld : ModWorld {
-		public static void DrawGrappleableTilesOverlayNear( Vector2 worldOrigin, int tileX, int tileY ) {
-			int rad = 7;
-			int maxTilesFromOrigin = 24;
+		public static void DrawGrappleableTilesOverlayNear( Vector2 worldOrigin ) {
+			int rad = 24;
+
+			int tileX = (int)worldOrigin.X / 16;
+			int tileY = (int)worldOrigin.Y / 16;
 
 			//
 
 			float radSqr = rad * rad;
-			int maxFromOrigSqr = maxTilesFromOrigin * maxTilesFromOrigin;
 
 			int origTileX = (int)worldOrigin.X / 16;
 			int origTileY = (int)worldOrigin.Y / 16;
@@ -43,7 +44,7 @@ namespace Grappletech {
 					int origDiffX = origTileX - i;
 					int origDiffY = origTileY - j;
 					int origDiffSqr = (origDiffX * origDiffX) + (origDiffY * origDiffY);
-					if( origDiffSqr >= maxFromOrigSqr ) {
+					if( origDiffSqr >= radSqr ) {
 						continue;
 					}
 
@@ -62,6 +63,8 @@ namespace Grappletech {
 		}
 
 		
+		////
+
 		public static void DrawGrappleableTileOverlayAt( int tileX, int tileY, float intensityPercent ) {
 			Vector2 scrPos = UIZoomLibraries.ConvertToScreenPosition(
 				new Vector2(tileX * 16, tileY * 16),
