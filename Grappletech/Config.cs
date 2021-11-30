@@ -23,7 +23,7 @@ namespace Grappletech {
 		public bool GrappleableTileWhitelistWoodAndPlatforms { get; set; } = true;
 
 		[DefaultValue( true )]
-		public bool GrappleableTileWhitelistNarrowFormations { get; set; } = true;
+		public bool GrappleableTileNarrowFormations { get; set; } = true;
 
 		//
 

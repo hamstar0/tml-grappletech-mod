@@ -41,7 +41,7 @@ namespace Grappletech {
 
 			var config = GrappletechConfig.Instance;
 			bool allowsWood = config.Get<bool>( nameof(config.GrappleableTileWhitelistWoodAndPlatforms) );
-			bool allowsPoles = config.Get<bool>( nameof(config.GrappleableTileWhitelistNarrowFormations) );
+			bool allowsPoles = config.Get<bool>( nameof(config.GrappleableTileNarrowFormations) );
 
 			string text;
 
