@@ -104,7 +104,7 @@ namespace Grappletech.Logic {
 			//int consecutiveNeighbors = 0;
 
 			for( int k=0; k<tilesNear.Count; k++ ) {
-				int next = k <= tilesNear.Count - 1 ? k + 1 : 0;
+				int next = k < (tilesNear.Count - 1) ? k + 1 : 0;
 				Tile tileNear = tilesNear[k];
 				Tile tileNext = tilesNear[next];
 
