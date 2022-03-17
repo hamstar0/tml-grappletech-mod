@@ -4,7 +4,7 @@ using Terraria;
 using Terraria.ModLoader;
 using ModLibsCore.Libraries.Debug;
 using ModLibsCore.Services.Timers;
-
+using Terraria.ID;
 
 namespace Grappletech {
 	partial class GrappletechWorld : ModWorld {
@@ -50,6 +50,7 @@ namespace Grappletech {
 			isGrappling = Main.projectile.Any( p =>
 				p?.active == true
 				&& p.aiStyle == 7
+				&& p.type != ProjectileID.TrackHook
 				&& !p.npcProj
 				&& p.owner == Main.myPlayer
 			);

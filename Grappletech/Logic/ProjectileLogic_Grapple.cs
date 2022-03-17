@@ -44,6 +44,8 @@ namespace Grappletech.Logic {
 				}
 			}
 
+			//
+
 			Vector2 projCen = projectile.Center;
 			Vector2 projVel = projectile.velocity;
 			int nowX = (int)projCen.X / 16;
@@ -62,13 +64,17 @@ namespace Grappletech.Logic {
 				Tile nextTile = Main.tile[nextX, nextY];
 				Tile lastTile = Main.tile[lastX, lastY];
 
-				if( nextTile?.nactive() == true && (Main.tileSolid[nextTile.type] || nextTile.type == TileID.MinecartTrack) ) {
+				bool nextTileGrappleable = nextTile?.nactive() == true
+					&& (Main.tileSolid[nextTile.type] || nextTile.type == TileID.MinecartTrack);
+				bool lastTileGrappleable = lastTile?.nactive() == true
+					&& (Main.tileSolid[lastTile.type] || lastTile.type == TileID.MinecartTrack);
+
+				if( nextTileGrappleable ) {
 					bool? isGrappleable = ProjectileLogic.IsTileNormallyGrappleable( nextX, nextY );
 					if( !isGrappleable.HasValue || !isGrappleable.Value ) {
 						ProjectileLogic.HaltGrapple( projectile );
 					}
-				} else
-				if( lastTile?.nactive() == true && (Main.tileSolid[lastTile.type] || lastTile.type == TileID.MinecartTrack) ) {
+				} else if( lastTileGrappleable ) {
 					bool? isGrappleable = ProjectileLogic.IsTileNormallyGrappleable( lastX, lastY );
 					if( !isGrappleable.HasValue || !isGrappleable.Value ) {
 						ProjectileLogic.HaltGrapple( projectile );
@@ -77,7 +83,10 @@ namespace Grappletech.Logic {
 			} else {
 				Tile nowTile = Main.tile[nowX, nowY];
 
-				if( nowTile?.nactive() == true && (Main.tileSolid[nowTile.type] || nowTile.type == TileID.MinecartTrack) ) {
+				bool nowTileGrappleable = nowTile?.nactive() == true
+					&& (Main.tileSolid[nowTile.type] || nowTile.type == TileID.MinecartTrack);
+
+				if( nowTileGrappleable ) {
 					bool? isGrappleable = ProjectileLogic.IsTileNormallyGrappleable( nowX, nowY );
 					if( !isGrappleable.HasValue || !isGrappleable.Value ) {
 						ProjectileLogic.HaltGrapple( projectile );

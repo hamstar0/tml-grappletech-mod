@@ -87,16 +87,29 @@ namespace Grappletech.Logic {
 			//
 
 			var tilesNear = new List<Tile>( 8 );
-			tilesNear.Add( Framing.GetTileSafely( tileX-1, tileY-1 ) ); //nw
-			tilesNear.Add( Framing.GetTileSafely( tileX, tileY-1 ) );   //n
-			tilesNear.Add( Framing.GetTileSafely( tileX+1, tileY-1 ) ); //ne
 
-			tilesNear.Add( Framing.GetTileSafely( tileX-1, tileY ) );   //w
-			tilesNear.Add( Framing.GetTileSafely( tileX+1, tileY ) );   //e
+			int rectRad = 2;
+			int xMin = tileX - rectRad;
+			int xMax = tileX + rectRad;
+			int yMin = tileY - rectRad;
+			int yMax = tileY + rectRad;
 
-			tilesNear.Add( Framing.GetTileSafely( tileX-1, tileY+1 ) ); //sw
-			tilesNear.Add( Framing.GetTileSafely( tileX, tileY+1 ) );   //s
-			tilesNear.Add( Framing.GetTileSafely( tileX+1, tileY+1 ) ); //se
+			for( int x=xMin; x<=xMax; x++ ) {
+				if( x <= 0 || x >= Main.maxTilesX ) {
+					continue;
+				}
+
+				for( int y=yMin; y<=yMax; y++ ) {
+					if( y <= 0 || y >= Main.maxTilesY ) {
+						continue;
+					}
+					if( x == tileX && y == tileY ) {
+						continue;
+					}
+
+					tilesNear.Add( Framing.GetTileSafely(x, y) );
+				}
+			}
 
 			//
 
@@ -120,7 +133,7 @@ namespace Grappletech.Logic {
 				//}
 			}
 
-			if( neighbors <= 3 ) {
+			if( neighbors <= 11 ) {	//3
 				return true;
 			}
 
