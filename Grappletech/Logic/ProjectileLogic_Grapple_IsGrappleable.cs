@@ -80,6 +80,7 @@ namespace Grappletech.Logic {
 			//
 
 			var config = GrappletechConfig.Instance;
+
 			if( !config.Get<bool>( nameof(config.GrappleableTileNarrowFormations) ) ) {
 				return false;
 			}
@@ -133,7 +134,7 @@ namespace Grappletech.Logic {
 				//}
 			}
 
-			if( neighbors <= 11 ) {	//3
+			if( neighbors <= 10 ) {	//3
 				return true;
 			}
 

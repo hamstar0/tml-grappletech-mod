@@ -1,10 +1,11 @@
 using System;
 using System.Linq;
 using Terraria;
+using Terraria.ID;
 using Terraria.ModLoader;
 using ModLibsCore.Libraries.Debug;
 using ModLibsCore.Services.Timers;
-using Terraria.ID;
+
 
 namespace Grappletech {
 	partial class GrappletechWorld : ModWorld {
@@ -17,36 +18,6 @@ namespace Grappletech {
 		//private Vector2 LastProjectilePos;
 
 		private bool CanDrawGrappleableTilesOverlay( out bool isGrappling ) {
-			int ticksRemaining = Timers.GetTimerTickDuration( GrappletechWorld.DrawGrappleLingerTimerName );
-			if( ticksRemaining >= 1 ) {
-				isGrappling = false;
-				return true;
-			}
-
-			//if( Main.LocalPlayer.grapCount <= 0 ) {	<- Isn't non-zero when initially grappling??
-			//	if( ticksRemaining <= 0 ) {
-			//		isGrappling = false;
-			//		return false;
-			//	}
-			//}
-			//
-			//Projectile grappProj = Main.projectile.FirstOrDefault( p =>
-			//	p?.active == true
-			//	&& p.aiStyle == 7
-			//	&& !p.npcProj
-			//	&& p.owner == Main.myPlayer
-			//);
-			//
-			//Vector2 pos;
-			//
-			//if( grappProj?.active == true ) {
-			//	Timers.SetTimer( timerName, 60, true, () => false );
-			//	pos = grappProj.Center;
-			//	this.LastProjectilePos = pos;
-			//} else {
-			//	pos = this.LastProjectilePos;
-			//}
-
 			isGrappling = Main.projectile.Any( p =>
 				p?.active == true
 				&& p.aiStyle == 7
@@ -54,14 +25,16 @@ namespace Grappletech {
 				&& !p.npcProj
 				&& p.owner == Main.myPlayer
 			);
-			return isGrappling;
+
+			int ticksRemaining = Timers.GetTimerTickDuration( GrappletechWorld.DrawGrappleLingerTimerName );
+			return ticksRemaining >= 1;
 		}
 
 		////
 
-		private void DrawGrappleableTilesOverlayIf( bool isGrappling ) {
+		private void DrawGrappleableTilesOverlay( bool isGrappling ) {
 			if( isGrappling ) {
-				Timers.SetTimer( GrappletechWorld.DrawGrappleLingerTimerName, 120, true, () => false );
+				Timers.SetTimer( GrappletechWorld.DrawGrappleLingerTimerName, 90, true, () => false );
 			}
 
 			//

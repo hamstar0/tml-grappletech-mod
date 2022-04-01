@@ -55,7 +55,7 @@ namespace Grappletech {
 					float diffSqr = (xDiff * xDiff) + (yDiff * yDiff);
 
 					float intensity = 1f - (diffSqr / radSqr);
-					intensity = 0.1f + (intensity * 0.9f);
+					intensity = 0.1f + (intensity * 0.7f);
 
 					GrappletechWorld.DrawGrappleableTileOverlayAt( i, j, intensity );
 				}
