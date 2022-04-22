@@ -27,7 +27,7 @@ namespace Grappletech {
 			);
 
 			int ticksRemaining = Timers.GetTimerTickDuration( GrappletechWorld.DrawGrappleLingerTimerName );
-			return ticksRemaining >= 1;
+			return isGrappling || ticksRemaining >= 1;
 		}
 
 		////

@@ -11,7 +11,7 @@ using Grappletech.Logic;
 namespace Grappletech {
 	partial class GrappletechWorld : ModWorld {
 		public static void DrawGrappleableTilesOverlayNear( Vector2 worldOrigin ) {
-			int rad = 24;
+			int rad = 28;
 
 			int tileX = (int)worldOrigin.X / 16;
 			int tileY = (int)worldOrigin.Y / 16;
@@ -55,7 +55,7 @@ namespace Grappletech {
 					float diffSqr = (xDiff * xDiff) + (yDiff * yDiff);
 
 					float intensity = 1f - (diffSqr / radSqr);
-					intensity = 0.1f + (intensity * 0.7f);
+					intensity = 0.1f + (intensity * 0.8f);
 
 					GrappletechWorld.DrawGrappleableTileOverlayAt( i, j, intensity );
 				}
@@ -72,15 +72,17 @@ namespace Grappletech {
 				true
 			);
 
+			float pulse = (float)Main.mouseTextColor / 255f;
+
 			Main.spriteBatch.Draw(
 				//texture: GrappletechMod.Instance.DisabledItemTex,
 				texture: GrappletechMod.Instance.GrappleIconTex,
 				position: scrPos,
 				sourceRectangle: null,
-				color: Color.Lime * intensityPercent,
+				color: Color.Lime * intensityPercent * pulse * pulse,
 				rotation: 0f,
 				origin: default,
-				scale: 0.6f,
+				scale: 0.7f,
 				effects: SpriteEffects.None,
 				layerDepth: 0
 			);
