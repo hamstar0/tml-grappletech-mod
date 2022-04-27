@@ -40,7 +40,7 @@ namespace Grappletech {
 			//
 
 			Main.spriteBatch.Begin();
-			GrappletechWorld.DrawGrappleableTilesOverlayNear( Main.LocalPlayer.MountedCenter );
+			GrappletechWorld.DrawGrappleableTilesOverlayNear( Main.spriteBatch, Main.LocalPlayer.MountedCenter );
 			Main.spriteBatch.End();
 		}
 	}

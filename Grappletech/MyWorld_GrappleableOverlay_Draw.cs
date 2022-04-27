@@ -10,7 +10,7 @@ using Grappletech.Logic;
 
 namespace Grappletech {
 	partial class GrappletechWorld : ModWorld {
-		public static void DrawGrappleableTilesOverlayNear( Vector2 worldOrigin ) {
+		public static void DrawGrappleableTilesOverlayNear( SpriteBatch sb, Vector2 worldOrigin ) {
 			int rad = 28;
 
 			int tileX = (int)worldOrigin.X / 16;
@@ -57,7 +57,7 @@ namespace Grappletech {
 					float intensity = 1f - (diffSqr / radSqr);
 					intensity = 0.1f + (intensity * 0.8f);
 
-					GrappletechWorld.DrawGrappleableTileOverlayAt( i, j, intensity );
+					GrappletechWorld.DrawGrappleableTileOverlayAt( sb, i, j, intensity );
 				}
 			}
 		}
@@ -65,19 +65,29 @@ namespace Grappletech {
 		
 		////
 
-		public static void DrawGrappleableTileOverlayAt( int tileX, int tileY, float intensityPercent ) {
-			Vector2 scrPos = UIZoomLibraries.ConvertToScreenPosition(
-				new Vector2(tileX * 16, tileY * 16),
-				null,
-				true
-			);
+		public static void DrawGrappleableTileOverlayAt(
+					SpriteBatch sb,
+					int tileX,
+					int tileY,
+					float intensityPercent ) {
+			var wldPos = new Vector2( tileX * 16, tileY * 16 );
+			var scrPos = wldPos - Main.screenPosition;
+			var scrPosOffsetFromCenter = scrPos - (new Vector2(Main.screenWidth, Main.screenHeight) * 0.5f);
+			var centerZoomedScrPos = (scrPos - scrPosOffsetFromCenter) + (scrPosOffsetFromCenter * Main.GameZoomTarget);
+			//Vector2 scrPos = UIZoomLibraries.ConvertToScreenPosition(		// <- TODO: Review!
+			//	worldCoords: new Vector2(tileX * 16, tileY * 16),
+			//	uiZoomState: null,
+			//	gameZoomState: false
+			//);
 
 			float pulse = (float)Main.mouseTextColor / 255f;
 
-			Main.spriteBatch.Draw(
+			//
+
+			sb.Draw(
 				//texture: GrappletechMod.Instance.DisabledItemTex,
 				texture: GrappletechMod.Instance.GrappleIconTex,
-				position: scrPos,
+				position: centerZoomedScrPos,
 				sourceRectangle: null,
 				color: Color.Lime * intensityPercent * pulse * pulse,
 				rotation: 0f,
